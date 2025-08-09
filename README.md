@@ -1,0 +1,1 @@
+# Nextjs_and_Strapi
