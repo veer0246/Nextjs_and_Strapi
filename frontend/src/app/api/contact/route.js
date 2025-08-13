@@ -9,7 +9,7 @@ export async function POST(req) {
     const formData = await req.formData();
 
     // Send data directly to Strapi Cloud API
-    const strapiRes = await fetch(`${process.env.STRAPI_URL}/api/contacts`, {
+    const strapiRes = await fetch(`${process.env.STRAPI_URL}/api/contact`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`
@@ -29,3 +29,5 @@ export async function POST(req) {
     return new Response(JSON.stringify({ error: "Server error" }), { status: 500 });
   }
 }
+
+
