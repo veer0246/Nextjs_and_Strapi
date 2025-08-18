@@ -25,6 +25,8 @@ import './globals.css';
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { CategoryProvider } from './context/CategoryContext';
+// import { CategoryContext, CategoryProvider, CategotyProvider } from './context/CategoryContext';
 
 export const metadata = {
   title: 'WhatsApp Share Card',
@@ -36,7 +38,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Navbar />
-        <main>{children}</main>
+        <main>
+          <CategoryProvider>
+            {children}       
+          </CategoryProvider>
+        </main>
         <Footer />
       </body>
     </html>

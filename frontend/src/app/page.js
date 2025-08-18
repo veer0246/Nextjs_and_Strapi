@@ -1,11 +1,3 @@
-// export default function HomePage() {
-//   return (
-//     <section>
-//       <h2 className="text-3xl font-bold">Welcome to NextEdge</h2>
-//       <p className="mt-4 font-bold">Your one-stop solution for web development.</p>
-//     </section>
-//   );
-// }
 export default function HomePage() {
   return (
     <section>
