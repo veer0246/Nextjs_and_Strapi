@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "userds",
+  "info": {
+    "singularName": "userd",
+    "pluralName": "userds",
+    "displayName": "Userd"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "email": {
+      "type": "email"
+    },
+    "dob": {
+      "type": "date"
+    },
+    "password": {
+      "type": "password"
+    },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}

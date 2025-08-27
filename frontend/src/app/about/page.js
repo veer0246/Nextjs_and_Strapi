@@ -43,7 +43,7 @@ export default function AboutPage() {
   ]
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 pt-25">
       <h1 className="h4 mb-4">Share Cards to WhatsApp</h1>
       <div className="row">
         {cards.map((card, index) => (

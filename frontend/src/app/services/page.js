@@ -58,7 +58,7 @@ export default async function Services() {
   const categories = await fetchCategories();
   const blogs = await fetchBlogs();
   return (
-    <main className="max-w-4xl mx-auto py-16 px-4">
+    <main className="max-w-4xl mx-auto py-16 px-4 pt-30">
       <h1 className="text-3xl font-bold mb-6">Our Services</h1>
       {/* <div className="grid gap-6 md:grid-cols-2">
         {dummyServices.map((s) => (

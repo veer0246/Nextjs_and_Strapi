@@ -21,7 +21,7 @@ export default async function page({params}) {
     const blog = await fetchBlog(params.id)
     console.log(blog)
     return (
-        <div className="max-w-3xl mx-auto p-4">
+        <div className="max-w-3xl mx-auto p-4 pt-20">
             <Link href="/services">{"< Back"}</Link>
             {blog?.data?.map((item)=>(
                 item.img.map((imgUrl)=>(

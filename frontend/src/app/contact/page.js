@@ -1,152 +1,166 @@
-// 'use client';
-// import { useState } from "react";
-
-// export default function ContactPage() {
-//   const [form, setForm] = useState({ name: '', email: '', message: '' });
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     const res = await fetch('/api/contact', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(form),
-//     });
-//     const result = await res.json();
-//     alert(result.message);
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
-//       <input name="name" placeholder="Name" onChange={handleChange} className="p-2 border w-full" required />
-//       <input name="email" placeholder="Email" onChange={handleChange} className="p-2 border w-full" required />
-//       <textarea name="message" placeholder="Message" onChange={handleChange} className="p-2 border w-full" required />
-//       <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Send</button>
-//     </form>
-//   );
-// }
-
 "use client";
 
 import { useState } from "react";
 
-export default function Contact() {
-  const [form, setForm] = useState({
+export default function Home() {
+  const [formData, setFormData] = useState({
     name: "",
+    address: "",
     email: "",
-    phone: "",
-    message: "",
-    image: null
+    dob: "",
+    password: "",
+    photo: null,
   });
-  const [status, setStatus] = useState(null);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setStatus("sending");
+  const [status, setStatus] = useState(""); // Added state for form status
 
-    const formData = new FormData();
-    formData.append("data", JSON.stringify({
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      message: form.message
-    }));
-    if (form.image) {
-      formData.append("files.image", form.image);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("sending...");
 
     try {
-      const res = await fetch("/api/contact", {
+      let photoId = null;
+      if (formData.photo) {
+        const fileData = new FormData();
+        fileData.append("files", formData.photo);
+
+        const uploadRes = await fetch("https://radiant-pleasure-e494182367.strapiapp.com/api/upload", {
+          method: "POST",
+          body: fileData,
+        });
+        const uploadData = await uploadRes.json();
+        photoId = uploadData[0]?.id;
+      }
+
+      const res = await fetch("https://radiant-pleasure-e494182367.strapiapp.com/api/userds", {
         method: "POST",
-        body: formData
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            name: formData.name,
+            address: formData.address,
+            email: formData.email,
+            dob: formData.dob,
+            password: formData.password,
+            photo: photoId,
+          },
+        }),
       });
-      if (res.ok) {
-        setStatus("Message sent!");
-        setForm({ name: "", email: "", phone: "", message: "", image: null });
+
+      const result = await res.json();
+      console.log("Form Submitted:", result);
+      if (result?.data) {
+        setStatus("success");
+        alert("Your form has been successfully submitted!");
+
+        // Reset form
+        setFormData({
+          name: "",
+          address: "",
+          email: "",
+          dob: "",
+          password: "",
+          photo: null,
+        });
+
+        // Also reset input fields manually
+        e.target.reset();
       } else {
-        const data = await res.json();
-        setStatus("Error: " + (data.error || "Failed to send"));
+        setStatus("error");
+        alert("Failed to submit form.");
       }
     } catch (err) {
-      console.error(err);
-      setStatus("Network error");
+      console.error("Error submitting form:", err);
+      setStatus("error");
+      alert("Something went wrong!");
     }
-  }
+  };
 
   return (
-    <main className="max-w-3xl mx-auto py-16 px-4">
-      <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        
-        <div>
-          <label className="block mb-1">Name</label>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-20">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Register Form
+        </h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            onChange={handleChange}
             required
-            value={form.name}
-            onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-            className="w-full border px-3 py-2"
-            placeholder="Your name"
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-
-        <div>
-          <label className="block mb-1">Email</label>
           <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            onChange={handleChange}
             required
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+          />
+          <input
             type="email"
-            value={form.email}
-            onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
-            className="w-full border px-3 py-2"
-            placeholder="you@example.com"
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-
-        <div>
-          <label className="block mb-1">Phone</label>
           <input
+            type="date"
+            name="dob"
+            onChange={handleChange}
             required
-            value={form.phone}
-            onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))}
-            className="w-full border px-3 py-2"
-            placeholder="Your phone number"
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-
-        <div>
-          <label className="block mb-1">Message</label>
-          <textarea
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
             required
-            value={form.message}
-            onChange={(e) => setForm(f => ({ ...f, message: e.target.value }))}
-            className="w-full border px-3 py-2"
-            rows={4}
-            placeholder="Your message"
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-
-        <div>
-          <label className="block mb-1">Image</label>
           <input
             type="file"
-            onChange={(e) => setForm(f => ({ ...f, image: e.target.files[0] }))}
-            className="w-full"
+            name="photo"
             accept="image/*"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-lg p-2 cursor-pointer"
           />
-        </div>
 
-        <button
-          type="submit"
-          disabled={status === "sending"}
-          className="bg-blue-600 text-white px-5 py-2 rounded"
-        >
-          {status === "sending" ? "Sending..." : "Send Message"}
-        </button>
+          <button
+            type="submit"
+            disabled={status === "sending..."}
+            className={`${status === "sending..." ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+              } text-white px-5 py-2 rounded transition`}
+          >
+            {status === "sending..." ? "Sending..." : "Submit"}
+          </button>
 
-        {status && <p className="mt-2">{status}</p>}
-      </form>
-    </main>
+          {/* {status && (
+            <p
+              className={`mt-2 text-center ${status.startsWith(" ") ? "text-green-600" : "text-red-600"
+                }`}
+            >
+              {status}
+            </p>
+          )} */}
+        </form>
+      </div>
+    </div>
   );
 }
